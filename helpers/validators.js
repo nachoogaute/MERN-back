@@ -38,9 +38,18 @@ const existeTareaPorID= async(id)=>{
 
 }
 
+const NoExisteEmail= async (email= "")=>{
+
+    const existeEmail= await Usuario.findOne({email})
+    if(!existeEmail){
+        throw new Error("El email no existe")
+    }
+}
+
 module.exports={
     existeEmail,
     existeUsuarioPorID,
     existeProyectoPorID,
-    existeTareaPorID
+    existeTareaPorID,
+    NoExisteEmail
 }

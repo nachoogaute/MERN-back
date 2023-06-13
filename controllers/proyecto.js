@@ -5,49 +5,30 @@ const obtenerProyecto= async(req, res)=>{
 
     const{id}= req.params
 
-    const proyecto= await Proyecto.findById(id).populate("creador", "nombre")
+    const proyecto= await Proyecto.findById(id).populate("tareas")
 
-    res.json({
-        proyecto
-    })
+    res.json(proyecto)
 
 
 }
 
 const obtenerProyectos= async(req, res)=>{
 
-    const {limite=5, desde=0}= req.query
+    const proyectos= await Proyecto.find().where("creador").equals(req.usuario).select("-tareas")
 
-    const[total,proyectos]=await Promise.all([
-        Proyecto.count(),
-        Proyecto.find()
-            .populate("creador", "nombre")
-            .skip(Number(desde))
-            .limit(Number(limite))
-      ])
-
-    res.json({
-        total,
-        proyectos
-    })
+    res.json(proyectos)
 }
 
 
 const crearProyecto= async (req, res)=>{
-    const {nombre, descripcion}= req.body
+    const {nombre, descripcion, cliente}= req.body
 
-    const proyectoDB= await Proyecto.findOne({nombre})
-    if(proyectoDB){
-        return res.status(400).json({
-            msg: `El proyecto ${proyectoDB.nombre} ya existe`
-        })
-    }
 
     const data={
         nombre,
         descripcion,
-        creador: req.usuario._id
-
+        cliente,
+        creador: req.usuario
     }
 
     const proyecto= new Proyecto(data)
@@ -65,9 +46,9 @@ const actualizarProyecto= async(req,res)=>{
 
     const proyecto= await Proyecto.findByIdAndUpdate(id, resto, {new:true})
 
-    res.json({
+    res.json(
         proyecto
-    })
+    )
 }
 
 
@@ -77,9 +58,9 @@ const eliminarProyecto= async(req, res)=>{
 
     const proyecto= await Proyecto.findByIdAndDelete(id)
 
-    res.json({
+    res.json(
         proyecto
-    })
+    )
 }
 
 module.exports={

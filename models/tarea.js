@@ -24,10 +24,6 @@ const tareasSchema= Schema({
     }
 })
 
-tareasSchema.methods.toJSON= function(){
-    const{__v,_id, ...tarea}=this.toObject()
-    tarea.uid= _id
-    return tarea
-  }
+
 
 module.exports= model("Tarea", tareasSchema)

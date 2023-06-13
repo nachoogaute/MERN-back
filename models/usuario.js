@@ -12,7 +12,7 @@ const usuarioSchema= Schema({
     },
     contraseña:{
         type: String,
-        required:[true, "La contraseña es obligatorio"]
+        required:[true, "La contraseña es obligatoria"]
     },
     token:{
         type:String
@@ -21,6 +21,11 @@ const usuarioSchema= Schema({
         type: Boolean,
         default: true
     },
+    confirmado:{
+        type: Boolean,
+        default: false,
+        required: true
+    }
     
 
 },{

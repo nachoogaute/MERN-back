@@ -8,17 +8,13 @@ const obtenerTarea= async(req, res)=>{
 
     const tarea= await Tarea.findById(id).populate("proyecto", "nombre")
 
-    res.json({
-        tarea
-    })
+    res.json(tarea)
 }
 
 const obtenerTareas= async(req, res)=>{
     const tarea= await Tarea.findOne().populate("proyecto", "nombre")
 
-    res.json({
-        tarea
-    })
+    res.json(tarea)
 }
 
 const crearTarea= async(req,res)=>{
@@ -39,8 +35,10 @@ const crearTarea= async(req,res)=>{
     }
 
     const tarea=  new Tarea(req.body)
+    existeProyecto.tareas.push(tarea._id)
+ 
     await tarea.save()
-
+    await existeProyecto.save()
     res.status(201).json(tarea)
 }
 
@@ -50,18 +48,30 @@ const actualizatTarea= async(req, res)=>{
 
     const tarea= await Tarea.findByIdAndUpdate(id, resto)
 
-    res.json({
-        tarea
-    })
+    res.json(tarea)
 }
 
 const estadoTarea= async(req,res)=>{
     const {id}= req.params
 
-    const tarea= await Tarea.findByIdAndUpdate(id, {estado: false})
+    const tarea= await Tarea.findById(id)
+
+    tarea.estado= !tarea.estado
+    await tarea.save()
+    res.json(tarea)
+
+
+}
+
+const eliminarTarea= async(req, res)=>{
+
+    const {id} = req.params
+
+    const tarea= await Tarea.findByIdAndDelete(id)
 
     res.json({
-        tarea
+        tarea,
+        msg: "Tarea Eliminada Correctamente"
     })
 }
 
@@ -70,5 +80,6 @@ module.exports={
     obtenerTareas,
     crearTarea,
     actualizatTarea,
-    estadoTarea
+    estadoTarea,
+    eliminarTarea
 }
